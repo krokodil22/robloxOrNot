@@ -1,6 +1,7 @@
-const trainerWrap = document.querySelector('#trainer-wrap');
-const trainerFrame = trainerWrap.querySelector('iframe');
+const trainerFrame = document.querySelector('#trainer-wrap iframe');
 const trainerStart = document.querySelector('#trainer-start');
+const result = document.querySelector('#result');
+let trainerScore = 0;
 
 trainerStart.addEventListener('click', () => {
   trainerStart.parentElement.hidden = true;
@@ -8,21 +9,31 @@ trainerStart.addEventListener('click', () => {
   trainerFrame.contentWindow.focus();
 });
 
+window.addEventListener('message', event => {
+  if (event.origin !== window.location.origin || event.source !== trainerFrame.contentWindow) return;
+  if (event.data?.type !== 'trainer-score' || !Number.isInteger(event.data.score)) return;
+  trainerScore = event.data.score;
+  result.textContent = '';
+});
+
 const translations = [
   ['color', 'цвет'],
   ['house', 'дом'],
   ['car', 'машина'],
   ['light', 'свет'],
+  ['jump', 'прыжок'],
+  ['fly', 'полет'],
+  ['health', 'здоровье'],
+  ['table', 'стол'],
 ];
-const words = translations.flat();
-for (let i = words.length - 1; i > 0; i -= 1) {
+const englishWords = translations.map(([english]) => english);
+for (let i = englishWords.length - 1; i > 0; i -= 1) {
   const j = Math.floor(Math.random() * (i + 1));
-  [words[i], words[j]] = [words[j], words[i]];
+  [englishWords[i], englishWords[j]] = [englishWords[j], englishWords[i]];
 }
 
-const wordCards = document.querySelector('#word-cards');
-const wordPairs = document.querySelector('#word-pairs');
-const wordFeedback = document.querySelector('#word-feedback');
+const wordRows = document.querySelector('#word-rows');
+const wordBank = document.querySelector('#word-bank');
 let selectedCard = null;
 let draggedCard = null;
 
@@ -32,49 +43,73 @@ function selectCard(card) {
   selectedCard?.setAttribute('aria-pressed', 'true');
 }
 
-function matchCards(first, second) {
-  selectCard(null);
-  const pair = translations.find(words => words.includes(first.textContent) && words.includes(second.textContent));
-  wordFeedback.dataset.error = String(!pair);
-  if (!pair) {
-    wordFeedback.textContent = 'Эти слова не подходят друг другу. Попробуй ещё раз.';
-    return;
+function placeCard(card, destination) {
+  const source = card.closest('.word-slot, .word-bank');
+  if (source !== destination) {
+    const previous = destination.matches('.word-slot') && destination.querySelector('.word-card');
+    if (previous) card.replaceWith(previous);
+    destination.append(card);
+    result.textContent = '';
   }
-
-  const [english, russian] = pair;
-  const item = document.createElement('li');
-  const englishWord = document.createElement('span');
-  englishWord.lang = 'en';
-  englishWord.textContent = english;
-  item.append(englishWord, ' — ', russian);
-  wordPairs.append(item);
-  first.remove();
-  second.remove();
-  wordCards.querySelector('button')?.focus();
-
-  const matched = wordPairs.children.length;
-  wordFeedback.textContent = matched === translations.length
-    ? 'Все пары собраны!'
-    : `Собрано пар: ${matched} из ${translations.length}.`;
+  selectCard(null);
 }
 
-for (const word of words) {
+function allowDrop(destination) {
+  destination.addEventListener('dragover', event => {
+    if (draggedCard) event.preventDefault();
+  });
+  destination.addEventListener('drop', event => {
+    if (!draggedCard) return;
+    event.preventDefault();
+    placeCard(draggedCard, destination);
+    draggedCard = null;
+  });
+}
+
+const slots = translations.map(([, russian]) => {
+  const row = document.createElement('div');
+  row.className = 'word-row';
+  const label = document.createElement('span');
+  label.textContent = russian;
+  const slot = document.createElement('div');
+  slot.className = 'word-slot';
+  const target = document.createElement('button');
+  target.type = 'button';
+  target.className = 'word-target';
+  target.textContent = 'Выбрать';
+  target.setAttribute('aria-label', `Поставить карточку напротив слова «${russian}»`);
+  target.addEventListener('click', () => {
+    if (selectedCard) {
+      const card = selectedCard;
+      placeCard(card, slot);
+      card.focus();
+    }
+  });
+  slot.append(target);
+  row.append(label, slot);
+  wordRows.append(row);
+  allowDrop(slot);
+  return slot;
+});
+
+for (const word of englishWords) {
   const card = document.createElement('button');
   card.type = 'button';
   card.className = 'word-card';
-  card.lang = /^[a-z]+$/.test(word) ? 'en' : 'ru';
+  card.lang = 'en';
   card.draggable = true;
   card.textContent = word;
   card.setAttribute('aria-pressed', 'false');
-
   card.addEventListener('click', () => {
-    if (selectedCard && selectedCard !== card) {
-      matchCards(selectedCard, card);
+    const slot = card.closest('.word-slot');
+    if (slot && selectedCard && selectedCard !== card) {
+      const selected = selectedCard;
+      placeCard(selected, slot);
+      selected.focus();
       return;
     }
     selectCard(selectedCard === card ? null : card);
   });
-
   card.addEventListener('dragstart', event => {
     draggedCard = card;
     event.dataTransfer.setData('text/plain', word);
@@ -85,47 +120,25 @@ for (const word of words) {
     draggedCard = null;
     selectCard(null);
   });
-  card.addEventListener('dragover', event => {
-    if (draggedCard && draggedCard !== card) {
-      event.preventDefault();
-      event.dataTransfer.dropEffect = 'move';
-    }
-  });
-  card.addEventListener('drop', event => {
-    event.preventDefault();
-    if (draggedCard && draggedCard !== card) {
-      matchCards(draggedCard, card);
-      draggedCard = null;
-    }
-  });
-  wordCards.append(card);
+  wordBank.append(card);
 }
+allowDrop(wordBank);
 
-const mathForm = document.querySelector('#math-form');
-const mathInputs = Array.from(mathForm.querySelectorAll('input'));
-const mathFeedback = document.querySelector('#math-feedback');
+const mathExamples = document.querySelector('#math-examples');
+const mathInputs = Array.from(mathExamples.querySelectorAll('input'));
 const answers = [8, 45, 920, 24];
 
-mathForm.addEventListener('submit', event => {
-  event.preventDefault();
-  let correctCount = 0;
-  mathInputs.forEach((input, index) => {
-    const value = input.value.trim();
-    const correct = /^\d+$/.test(value) && Number(value) === answers[index];
-    input.dataset.correct = String(correct);
-    input.setAttribute('aria-invalid', String(!correct));
-    correctCount += Number(correct);
-  });
-  mathFeedback.dataset.error = String(correctCount !== answers.length);
-  mathFeedback.textContent = correctCount === answers.length
-    ? 'Все ответы верны!'
-    : `Верных ответов: ${correctCount} из ${answers.length}. Проверь выделенные поля.`;
+mathExamples.addEventListener('input', () => {
+  result.textContent = '';
 });
 
-for (const input of mathInputs) {
-  input.addEventListener('input', () => {
-    delete input.dataset.correct;
-    input.removeAttribute('aria-invalid');
-    mathFeedback.textContent = '';
-  });
-}
+document.querySelector('#show-result').addEventListener('click', () => {
+  const wordScore = slots.filter((slot, index) =>
+    slot.querySelector('.word-card')?.textContent === translations[index][0]
+  ).length;
+  const mathScore = mathInputs.filter((input, index) => {
+    const value = input.value.trim();
+    return /^\d+$/.test(value) && Number(value) === answers[index];
+  }).length;
+  result.textContent = `Набрано баллов: ${trainerScore + wordScore + mathScore}`;
+});

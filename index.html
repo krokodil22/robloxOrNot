@@ -16,7 +16,7 @@
       <section class="task" aria-label="Задание 1">
         <h2 class="task-title">Задание 1</h2>
         <h3 class="task-headline">Клавиатурный тренажёр</h3>
-        <p class="logic-text">Включи английскую раскладку. Нажми «Начать», затем пробел. Нажимай клавиши с буквами, которые появляются на экране, и набери 20 очков.</p>
+        <p class="logic-text">Включи английскую раскладку. Нажми «Начать», затем пробел. Нажимай клавиши с буквами, которые появляются на экране,.</p>
         <div class="trainer-wrap" id="trainer-wrap">
           <iframe src="difficulty-3.html" title="Клавиатурный тренажёр" inert></iframe>
           <div class="trainer-start-overlay">
@@ -28,25 +28,31 @@
       <section class="task" aria-label="Задание 2">
         <h2 class="task-title">Задание 2</h2>
         <h3 class="task-headline">Соедини слова с переводом</h3>
-        <p class="logic-text">Перетащи одну карточку на другую или выбери две карточки по очереди.</p>
-        <div class="word-cards" id="word-cards" aria-label="Карточки со словами"></div>
-        <ul class="word-pairs" id="word-pairs" aria-label="Собранные пары"></ul>
-        <p class="logic-success" id="word-feedback" role="status"></p>
+        <p class="logic-text">Перетащи английскую карточку в поле напротив её перевода. Можно также выбрать карточку и нажать на поле.</p>
+        <div class="matching">
+          <div class="word-rows" id="word-rows"></div>
+          <div class="word-bank" id="word-bank" aria-label="Английские карточки"></div>
+        </div>
       </section>
 
       <section class="task" aria-label="Задание 3">
         <h2 class="task-title">Задание 3</h2>
         <h3 class="task-headline">Реши примеры</h3>
-        <form id="math-form">
+        <div id="math-examples">
           <div class="math-grid">
-            <label class="math-card"><span>64 : 8 =</span><input type="text" inputmode="numeric" required /></label>
-            <label class="math-card"><span>15 × 3 =</span><input type="text" inputmode="numeric" required /></label>
-            <label class="math-card"><span>330 + 590 =</span><input type="text" inputmode="numeric" required /></label>
-            <label class="math-card"><span>72 : 3 =</span><input type="text" inputmode="numeric" required /></label>
+            <label class="math-card"><span>64 : 8 =</span><input type="text" inputmode="numeric" /></label>
+            <label class="math-card"><span>15 × 3 =</span><input type="text" inputmode="numeric" /></label>
+            <label class="math-card"><span>330 + 590 =</span><input type="text" inputmode="numeric" /></label>
+            <label class="math-card"><span>72 : 3 =</span><input type="text" inputmode="numeric" /></label>
           </div>
-          <button type="submit">Проверить ответы</button>
-        </form>
-        <p class="logic-success" id="math-feedback" role="status"></p>
+        </div>
+      </section>
+
+      <section class="task" aria-label="Итог">
+        <div class="result-actions">
+          <button id="show-result" type="button">Показать результат</button>
+          <output id="result" aria-live="polite"></output>
+        </div>
       </section>
     </main>
 

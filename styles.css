@@ -3,7 +3,6 @@
   --ink: #4f1dbc;
   --purple: #7e33dd;
   --pink: #e95bb7;
-  --green: #18c48a;
 }
 
 * {
@@ -98,15 +97,6 @@ button {
   color: #1d253c;
 }
 
-.logic-success {
-  margin: 0;
-  min-height: 24px;
-  color: #119a6c;
-  font-size: clamp(16px, 1.3vw, 20px);
-  font-weight: 700;
-}
-
-
 .trainer-wrap {
   position: relative;
   width: 100%;
@@ -118,7 +108,7 @@ button {
 
 .trainer-wrap iframe {
   width: 100%;
-  height: clamp(520px, 80vh, 920px);
+  height: 370px;
   border: 0;
   display: block;
 }
@@ -140,46 +130,76 @@ button {
   display: none;
 }
 
-.word-cards,
-.word-pairs {
+.matching {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
-  gap: 8px;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: clamp(8px, 2vw, 24px);
+  max-width: 720px;
+}
+
+.word-rows,
+.word-bank {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+}
+
+.word-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+  color: var(--ink);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.word-bank {
+  border: 2px dashed #dce8ff;
+  border-radius: 12px;
+  padding: 4px;
 }
 
 .word-card,
-.word-pairs li,
-.math-card {
-  padding: 10px;
+.word-target {
+  width: 100%;
+  min-height: 38px;
+  padding: 4px;
   background: #fff;
   color: var(--ink);
   border: 2px solid #dce8ff;
-  border-radius: 12px;
-  font-size: 18px;
+  border-radius: 10px;
   font-weight: 700;
-  text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .word-card {
   cursor: grab;
 }
 
+.word-target {
+  border-style: dashed;
+  background: transparent;
+}
+
+.word-slot:has(.word-card) .word-target {
+  display: none;
+}
+
 .word-card[aria-pressed="true"],
-.word-card:focus-visible {
+.word-card:focus-visible,
+.word-target:focus-visible {
   outline: 2px solid var(--purple);
   outline-offset: 1px;
-  background: var(--bg);
 }
 
-.word-pairs {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.word-pairs li {
-  background: #e8fff3;
-  border-color: var(--green);
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+  font-weight: 700;
 }
 
 .math-grid {
@@ -190,6 +210,13 @@ button {
 }
 
 .math-card {
+  padding: 10px;
+  background: #fff;
+  color: var(--ink);
+  border: 2px solid #dce8ff;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -203,16 +230,4 @@ button {
   border-radius: 8px;
   font: inherit;
   text-align: center;
-}
-
-.math-card input[data-correct="true"] {
-  border-color: var(--green);
-}
-
-.math-card input[aria-invalid="true"] {
-  border-color: #b42318;
-}
-
-.logic-success[data-error="true"] {
-  color: #b42318;
 }

@@ -8,18 +8,16 @@
       :root { --bg:#f8fafc; --panel:#fff; --text:#0f172a; --violet:#7c3aed; --border:#e2e8f0; --pink:#ec4899; }
       * { box-sizing: border-box; }
       body { margin:0; font-family: Arial, sans-serif; background:var(--bg); color:var(--text); }
-      .wrap { width:min(980px,100%); margin:0 auto; padding:16px; }
-      .stats { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
-      .tag { background:#fff; border:1px solid var(--border); border-radius:12px; padding:6px 10px; font-weight:700; }
-      .arena { position:relative; height:220px; border:1px solid var(--border); border-radius:16px; background:linear-gradient(90deg,#e2e8f0,#f8fafc); overflow:hidden; }
+      .wrap { width:min(980px,100%); margin:0 auto; padding:10px; }
+      .stats { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:8px; }
+      .arena { position:relative; height:156px; border:1px solid var(--border); border-radius:16px; background:linear-gradient(90deg,#e2e8f0,#f8fafc); overflow:hidden; }
       .fly { position:absolute; left:0; top:50%; transform:translateY(-50%); font-weight:900; font-size:42px; background:var(--violet); color:#fff; padding:10px 18px; border-radius:14px; }
       .hint { position:absolute; inset:auto 0 16px; text-align:center; color:#475569; font-weight:700; }
-      .kbd-outer { margin-top:16px; }
-      .kbd { margin-top:16px; display:flex; flex-direction:column; gap:8px; align-items:center; pointer-events:none; }
+      .kbd-outer { margin-top:8px; }
+      .kbd { display:flex; flex-direction:column; gap:8px; align-items:center; pointer-events:none; }
       .row { display:flex; gap:clamp(2px, 0.8vw, 8px); }
-      .key { width:clamp(22px, 7vw, 40px); padding:9px 0; border:1px solid var(--border); border-radius:10px; background:var(--panel); font-weight:700; }
+      .key { width:min(7vw, 40px); padding:6px 0; text-align:center; border:1px solid var(--border); border-radius:10px; background:var(--panel); font-weight:700; }
       .key.active { background:var(--violet); color:#fff; }
-      .key.wrong { background:#ef4444; color:#fff; }
       .spacekey { min-width:220px; text-align:center; }
       .lives{display:flex;gap:6px}
       .heart{width:20px;height:20px;border:2px solid var(--pink);border-radius:50%;display:inline-block}
@@ -33,15 +31,13 @@
     <div class="wrap">
       <div class="stats">
         <div class="lives" id="lives"></div>
-        <div class="tag" id="scoreTag">Очки: 0</div>
       </div>
       <div class="arena" id="arena">
         <div class="fly" id="fly" lang="en">A</div>
         <div class="hint" id="arenaHint">Нажми ПРОБЕЛ, чтобы начать</div>
         <div class="overlay" id="over">
           <div class="overlay-card">
-            <h3 id="overlayTitle">Игра окончена</h3>
-            <p id="finalScore">Ваш счёт: 0</p>
+            <h3>Раунд завершён</h3>
             <div class="actions">
               <button id="retryBtn" type="button">Начать заново</button>
             </div>
@@ -63,10 +59,7 @@
   const fly = document.querySelector('#fly');
   const arena = document.querySelector('#arena');
   const livesDisplay = document.querySelector('#lives');
-  const scoreDisplay = document.querySelector('#scoreTag');
   const overlay = document.querySelector('#over');
-  const overlayTitle = document.querySelector('#overlayTitle');
-  const finalScore = document.querySelector('#finalScore');
   const retry = document.querySelector('#retryBtn');
   const hint = document.querySelector('#arenaHint');
   const keyboard = document.querySelector('#kbd');
@@ -129,17 +122,18 @@
     running = false;
     overlay.style.display = 'none';
     hint.style.display = 'block';
-    scoreDisplay.textContent = 'Очки: 0';
+    reportScore();
     renderLives();
     spawn();
     window.focus();
   }
 
-  function finishRound(won) {
+  function reportScore() {
+    window.parent.postMessage({ type: 'trainer-score', score }, window.location.origin);
+  }
+
+  function finishRound() {
     running = false;
-    overlayTitle.textContent = won ? 'Уровень пройден!' : 'Игра окончена';
-    finalScore.textContent = `Очки: ${score}`;
-    retry.textContent = won ? 'Сыграть ещё раз' : 'Начать заново';
     overlay.style.display = 'flex';
     retry.focus();
     highlight();
@@ -148,7 +142,7 @@
   function loseLife() {
     lives -= 1;
     renderLives();
-    if (lives === 0) finishRound(false);
+    if (lives === 0) finishRound();
   }
 
   function loop(timestamp) {
@@ -179,18 +173,13 @@
     const letter = event.key.toUpperCase();
     if (letter === target) {
       score += 1;
-      scoreDisplay.textContent = `Очки: ${score}`;
-      if (score === targetScore) finishRound(true);
+      reportScore();
+      if (score === targetScore) finishRound();
       else spawn();
       return;
     }
 
-    const key = keys.get(letter);
-    if (key) {
-      key.classList.add('wrong');
-      setTimeout(() => key.classList.remove('wrong'), 220);
-      loseLife();
-    }
+    if (keys.has(letter)) loseLife();
   });
 
   retry.addEventListener('click', resetRound);
