@@ -15,164 +15,40 @@
 
       <section class="task" aria-label="Задание 1">
         <h2 class="task-title">Задание 1</h2>
-        <h1 class="task-headline">Нарисуй путь, чтобы расшифровать послание.</h1>
-
-        <section class="code" aria-label="Последовательность шагов">
-          <p>2↑ 2→ 1↑ 1→ 2↑ 1→ 1↓ 1→ 1↑ 1→ 1↓ 1→ 1↑ 1→ 2↓ 4←</p>
-          <p>1↓ 1← 3↓ 1→ 1↓ 7→ 3↓ 1← 2↑ 1← 6↓ 1← 2↑ 1← 2↑ 3←</p>
-          <p>2↓ 1← 2↓ 1← 5↑ 1← 4↑ 1←</p>
-        </section>
-
-        <section class="hint">
-          <h3>Подсказки:</h3>
-          <p>Управляй стрелками на клавиатуре. Стрелки сверху показывают направление. <br> Цифра указывает на то, сколько клеток нужно двигаться в указанном направлении.</p>
-        </section>
-
-        <section class="play-area" aria-label="Область рисования и подсказка персонажа">
-          <section class="board-wrap" aria-label="Поле для рисования">
-            <canvas id="board" width="900" height="650"></canvas>
-            <p class="success-overlay" id="success" role="status" aria-live="polite"></p>
-          </section>
-
-          <section class="character" aria-label="Подсказка персонажа">
-            <div class="bubble">
-              <p>Это же настоящий алгоритм,<br />как в программировании!</p>
-            </div>
-            <img class="dino" src="dino2.png" alt="Динозаврик подсказывает" />
-          </section>
-        </section>
-
-        <div class="controls">
-          <button id="reset">Сбросить рисунок</button>
-          <p>Управление: клавиши ← ↑ → ↓</p>
-        </div>
-      </section>
-
-      <section class="task task-logic" aria-label="Задание 2">
-        <h2 class="task-title">Задание 2</h2>
-
-        <h3 class="task-headline">Используй логику! Без логики в программировании никак не обойтись!</h3>
-
-        <div class="logic-intro">
-          <img class="logic-house" src="house.png" alt="Дом с этажами" />
-          <p class="logic-text">В этом доме живут разные животные. Вот что нам известно: <br>
-        <br>
-          - на первом этаже никто не живет <br>
-          - зайцы живут над слонами <br>
-          - мыши живут под лисами <br>
-          - лисы живут на последнем этаже </p>
-        </div>
-       
-
-        <p class="logic-text">Помоги правильно расселить животных! Впиши этаж для каждого животного!</p>
-
-        <div class="animals-grid" id="animals-grid">
-          <label class="animal-card">
-            <span class="animal-name">🐇 Заяц</span>
-            <span class="animal-floor">Этаж: <input data-animal="rabbit" inputmode="numeric" maxlength="1" aria-label="Этаж для зайца" /></span>
-          </label>
-          <label class="animal-card">
-            <span class="animal-name">🦊 Лиса</span>
-            <span class="animal-floor">Этаж: <input data-animal="fox" inputmode="numeric" maxlength="1" aria-label="Этаж для лисы" /></span>
-          </label>
-          <label class="animal-card">
-            <span class="animal-name">🐭 Мышь</span>
-            <span class="animal-floor">Этаж: <input data-animal="mouse" inputmode="numeric" maxlength="1" aria-label="Этаж для мыши" /></span>
-          </label>
-          <label class="animal-card">
-            <span class="animal-name">🐘 Слон</span>
-            <span class="animal-floor">Этаж: <input data-animal="elephant" inputmode="numeric" maxlength="1" aria-label="Этаж для слона" /></span>
-          </label>
-        </div>
-
-        <p class="logic-success" id="logic-success" role="status" aria-live="polite"></p>
-      </section>
-
-      <section class="task task-monsters" aria-label="Задание 3">
-        <h2 class="task-title">Задание 3</h2>
-        <h3 class="task-headline">Угадай, где живет каждый монстрик, и переставь его в домик.</h3>
-  
-        <p class="logic-text">
-          На улице живут 5 монстриков: красный, синий, зеленый, черный и желтый.<br /><br />
-          - красный монстрик живет посередине улицы<br />
-          - черный монстрик живет не в первом и не в последнем доме<br />
-          - желтый монстрик живет в самом маленьком доме<br />
-          - зеленый монстрик живет рядом с черным<br />
-        </p>
-        <p></p>
-
-        <div class="monster-task">
-          <div class="monster-list" aria-label="Монстрики для перетаскивания">
-            <img class="monster" id="monster-red" src="red.svg" alt="Красный монстрик" draggable="true" data-monster="red" />
-            <img class="monster" id="monster-blue" src="blue.svg" alt="Синий монстрик" draggable="true" data-monster="blue" />
-            <img class="monster" id="monster-green" src="green.svg" alt="Зеленый монстрик" draggable="true" data-monster="green" />
-            <img class="monster" id="monster-black" src="black.svg" alt="Черный монстрик" draggable="true" data-monster="black" />
-            <img class="monster" id="monster-yellow" src="yellow.svg" alt="Желтый монстрик" draggable="true" data-monster="yellow" />
-          </div>
-
-          <div class="houses-row" aria-label="Домики">
-            <div class="house-slot" data-house="house1">
-              <img src="house1.svg" alt="Домик 1" />
-            </div>
-            <div class="house-slot" data-house="house2">
-              <img src="house2.svg" alt="Домик 2" />
-            </div>
-            <div class="house-slot" data-house="house3">
-              <img src="house3.svg" alt="Домик 3" />
-            </div>
-            <div class="house-slot" data-house="house4">
-              <img src="house4.svg" alt="Домик 4" />
-            </div>
-            <div class="house-slot" data-house="house5">
-              <img src="house5.svg" alt="Домик 5" />
-            </div>
-          </div>
-        </div>
-        <button id="monsters-reset" type="button">Сбросить монстриков</button>
-        <p class="logic-success" id="monsters-success" role="status" aria-live="polite"></p>
-      </section>
-
-
-
-      
-
-      <section class="task" aria-label="Задание 4">
-        <h2 class="task-title">Задание 4</h2>
-        <h3 class="task-headline">Клавиатурный тренажёр: пройди уровни 1–6 и закрепи навык печати.</h3>
-        <p class="logic-text">Чтобы выполнить задание, <b>нажимай клавиши на клавиатуре</b>. <br> Сначала нажми кнопку «Начать», затем в тренажёре нажми пробел для старта. Если тренажер не работает, проверь, что у тебя включен русский язык клавиатуры, а также выключен CapsLock. <br> Проходи уровни, набирай очки и переходи дальше.</p>
-        <div class="trainer-wrap trainer-wrap--locked" id="trainer-wrap">
-          <iframe src="difficulty-3.html" title="Клавиатурный тренажёр" loading="lazy"></iframe>
-          <div class="trainer-start-overlay" id="trainer-start-overlay">
+        <h3 class="task-headline">Клавиатурный тренажёр</h3>
+        <p class="logic-text">Включи английскую раскладку. Нажми «Начать», затем пробел. Нажимай клавиши с буквами, которые появляются на экране, и набери 20 очков.</p>
+        <div class="trainer-wrap" id="trainer-wrap">
+          <iframe src="difficulty-3.html" title="Клавиатурный тренажёр" inert></iframe>
+          <div class="trainer-start-overlay">
             <button id="trainer-start" type="button">Начать</button>
           </div>
         </div>
       </section>
 
-      <section class="task" aria-label="Задание 5">
-        <h2 class="task-title">Задание 5</h2>
-        <h3 class="task-headline">Узнай интересные факты о покадровой анимации и создай собственный короткий мультфильм! 🔥</h3>
-       
-        <div class="video-wrap">
-          <iframe
-            width="720"
-            height="405"
-            src="https://rutube.ru/play/embed/9443acbd90754f274b69a835acc9a75a/?p=kGPwfU9O5a6I685BPv_kkg"
-            style="border: none;"
-            allow="clipboard-write; autoplay"
-            allowFullScreen
-          ></iframe>
-        </div>
-         <p class="logic-text">Ссылка на онлайн-сервис, в котором мы будем создавать анимацию: <a href="https://www.wickeditor.com" target="_blank" rel="noopener noreferrer">https://www.wickeditor.com</a></p>
+      <section class="task" aria-label="Задание 2">
+        <h2 class="task-title">Задание 2</h2>
+        <h3 class="task-headline">Соедини слова с переводом</h3>
+        <p class="logic-text">Перетащи одну карточку на другую или выбери две карточки по очереди.</p>
+        <div class="word-cards" id="word-cards" aria-label="Карточки со словами"></div>
+        <ul class="word-pairs" id="word-pairs" aria-label="Собранные пары"></ul>
+        <p class="logic-success" id="word-feedback" role="status"></p>
+      </section>
+
+      <section class="task" aria-label="Задание 3">
+        <h2 class="task-title">Задание 3</h2>
+        <h3 class="task-headline">Реши примеры</h3>
+        <form id="math-form">
+          <div class="math-grid">
+            <label class="math-card"><span>64 : 8 =</span><input type="text" inputmode="numeric" required /></label>
+            <label class="math-card"><span>15 × 3 =</span><input type="text" inputmode="numeric" required /></label>
+            <label class="math-card"><span>330 + 590 =</span><input type="text" inputmode="numeric" required /></label>
+            <label class="math-card"><span>72 : 3 =</span><input type="text" inputmode="numeric" required /></label>
+          </div>
+          <button type="submit">Проверить ответы</button>
+        </form>
+        <p class="logic-success" id="math-feedback" role="status"></p>
       </section>
     </main>
-
-    <div class="completion-modal" id="completion-modal" role="dialog" aria-modal="true" aria-labelledby="completion-title">
-      <div class="completion-modal__content">
-        <p id="completion-title">Ого! Ты выполнил все задания! Поздравляем! Еще более интересные задачи ждут тебя на занятиях в Тетрике!</p>
-        <button id="completion-close" type="button">Ура!</button>
-      </div>
-      <div class="fireworks" id="fireworks" aria-hidden="true"></div>
-    </div>
 
     <script src="script.js"></script>
   </body>
