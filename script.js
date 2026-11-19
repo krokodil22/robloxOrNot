@@ -19,12 +19,9 @@ window.addEventListener('message', event => {
 const translations = [
   ['color', 'цвет'],
   ['house', 'дом'],
-  ['car', 'машина'],
   ['light', 'свет'],
-  ['jump', 'прыжок'],
   ['fly', 'полет'],
   ['health', 'здоровье'],
-  ['table', 'стол'],
 ];
 const englishWords = translations.map(([english]) => english);
 for (let i = englishWords.length - 1; i > 0; i -= 1) {
@@ -126,7 +123,7 @@ allowDrop(wordBank);
 
 const mathExamples = document.querySelector('#math-examples');
 const mathInputs = Array.from(mathExamples.querySelectorAll('input'));
-const answers = [8, 45, 920, 24];
+const answers = [8, 45, 920];
 
 mathExamples.addEventListener('input', () => {
   result.textContent = '';

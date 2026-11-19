@@ -54,7 +54,7 @@
   const letters = 'ETAOINSHRDLU';
   const speed = 105;
   const startLives = 5;
-  const targetScore = 20;
+  const targetHits = 20;
 
   const fly = document.querySelector('#fly');
   const arena = document.querySelector('#arena');
@@ -85,7 +85,7 @@
 
   let running = false;
   let lives = startLives;
-  let score = 0;
+  let hits = 0;
   let target = '';
   let x = 0;
   let lastTimestamp = null;
@@ -104,7 +104,7 @@
     for (const [letter, key] of keys) {
       key.classList.toggle('active', running && letter === target);
     }
-    spaceKey.classList.toggle('active', !running && lives > 0 && score < targetScore);
+    spaceKey.classList.toggle('active', !running && lives > 0 && hits < targetHits);
   }
 
   function spawn() {
@@ -118,22 +118,23 @@
 
   function resetRound() {
     lives = startLives;
-    score = 0;
+    hits = 0;
     running = false;
     overlay.style.display = 'none';
     hint.style.display = 'block';
-    reportScore();
+    reportScore(0);
     renderLives();
     spawn();
     window.focus();
   }
 
-  function reportScore() {
+  function reportScore(score) {
     window.parent.postMessage({ type: 'trainer-score', score }, window.location.origin);
   }
 
   function finishRound() {
     running = false;
+    reportScore(lives);
     overlay.style.display = 'flex';
     retry.focus();
     highlight();
@@ -159,7 +160,7 @@
   }
 
   window.addEventListener('keydown', event => {
-    if (event.code === 'Space' && !running && lives > 0 && score < targetScore) {
+    if (event.code === 'Space' && !running && lives > 0 && hits < targetHits) {
       event.preventDefault();
       if (event.repeat) return;
       running = true;
@@ -172,9 +173,8 @@
 
     const letter = event.key.toUpperCase();
     if (letter === target) {
-      score += 1;
-      reportScore();
-      if (score === targetScore) finishRound();
+      hits += 1;
+      if (hits === targetHits) finishRound();
       else spawn();
       return;
     }
