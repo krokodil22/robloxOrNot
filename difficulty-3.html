@@ -54,7 +54,7 @@
   const letters = 'ETAOINSHRDLU';
   const speed = 105;
   const startLives = 5;
-  const targetHits = 20;
+  const roundLength = 10;
 
   const fly = document.querySelector('#fly');
   const arena = document.querySelector('#arena');
@@ -85,7 +85,7 @@
 
   let running = false;
   let lives = startLives;
-  let hits = 0;
+  let remainingLetters = [...letters];
   let target = '';
   let x = 0;
   let lastTimestamp = null;
@@ -104,12 +104,12 @@
     for (const [letter, key] of keys) {
       key.classList.toggle('active', running && letter === target);
     }
-    spaceKey.classList.toggle('active', !running && lives > 0 && hits < targetHits);
+    spaceKey.classList.toggle('active', !running && Boolean(target));
   }
 
   function spawn() {
-    const available = letters.replace(target, '');
-    target = available[Math.floor(Math.random() * available.length)];
+    const index = Math.floor(Math.random() * remainingLetters.length);
+    [target] = remainingLetters.splice(index, 1);
     fly.textContent = target;
     x = Math.max(0, arena.clientWidth - fly.offsetWidth - 8);
     fly.style.left = `${x}px`;
@@ -118,7 +118,7 @@
 
   function resetRound() {
     lives = startLives;
-    hits = 0;
+    remainingLetters = [...letters];
     running = false;
     overlay.style.display = 'none';
     hint.style.display = 'block';
@@ -134,10 +134,16 @@
 
   function finishRound() {
     running = false;
+    target = '';
     reportScore(lives);
     overlay.style.display = 'flex';
     retry.focus();
     highlight();
+  }
+
+  function advanceRound() {
+    if (letters.length - remainingLetters.length === roundLength) finishRound();
+    else spawn();
   }
 
   function loseLife() {
@@ -152,7 +158,7 @@
       fly.style.left = `${x}px`;
       if (x <= 8) {
         loseLife();
-        if (running) spawn();
+        if (running) advanceRound();
       }
     }
     lastTimestamp = timestamp;
@@ -160,7 +166,7 @@
   }
 
   window.addEventListener('keydown', event => {
-    if (event.code === 'Space' && !running && lives > 0 && hits < targetHits) {
+    if (event.code === 'Space' && !running && target) {
       event.preventDefault();
       if (event.repeat) return;
       running = true;
@@ -173,9 +179,7 @@
 
     const letter = event.key.toUpperCase();
     if (letter === target) {
-      hits += 1;
-      if (hits === targetHits) finishRound();
-      else spawn();
+      advanceRound();
       return;
     }
 
